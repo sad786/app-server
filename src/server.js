@@ -15,7 +15,7 @@ const io = new Server(server, {
 let users = {};
 
 app.get("/", (req, res) => {
-	res.send("WebSocket Server is Running...");
+	res.send("<h1>WebSocket Server is Running...</h1>");
 });
 
 io.on("connection", (socket) => {
@@ -41,6 +41,7 @@ io.on("connection", (socket) => {
         io.to(data.group).emit("receiveMessage", {
             sender:data.sender,
             text:data.text,
+            id:socket.id,
             timestamp:new Date().toLocaleTimeString(),
         });
     });
@@ -50,7 +51,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("typing", (group) => {
-        socket.broadcast.to(group).emit("userTyping", true);
+        socket.broadcast.to(group).emit("userTyping", true, socket.id);
     });
 
     socket.on("stopTyping", (group) => {
